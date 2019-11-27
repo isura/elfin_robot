@@ -114,7 +114,11 @@ void ElfinMotionAPI::cartGoalCB(const geometry_msgs::PoseStampedConstPtr &msg)
 
     Eigen::Affine3d affine_pose_goal=affine_refToRoot * affine_pose_tmp * affine_tipToEnd;
 
-    if(group_->setPoseTarget(affine_pose_goal))
+    Eigen::Isometry3d isometry_pose_goal;
+    isometry_pose_goal.translation() = affine_pose_goal.translation();
+    isometry_pose_goal.linear()      = affine_pose_goal.rotation();
+
+    if(group_->setPoseTarget(isometry_pose_goal))
     {
         group_->asyncMove();
     }

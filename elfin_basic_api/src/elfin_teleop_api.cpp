@@ -362,7 +362,11 @@ bool ElfinTeleopAPI::cartTeleop_cb(elfin_robot_msgs::SetInt16::Request &req, elf
 
         affine_current_pose=affine_refToRoot * affine_pose_tmp * affine_tipToEnd;
 
-        ik_have_result=kinematic_state.setFromIK(joint_model_group, affine_current_pose, default_tip_link_);
+        Eigen::Isometry3d isometry_current_pose;
+        isometry_current_pose.translation() = affine_current_pose.translation();
+        isometry_current_pose.linear()      = affine_current_pose.rotation();
+
+        ik_have_result=kinematic_state.setFromIK(joint_model_group, isometry_current_pose, default_tip_link_);
         if(ik_have_result)
         {
             if(goal_.trajectory.points.size()!=i)
